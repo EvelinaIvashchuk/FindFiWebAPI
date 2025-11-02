@@ -21,11 +21,26 @@ builder.Services.AddOpenApi();
 // ProblemDetails + Swagger/OpenAPI
 builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "FindFi API",
+        Version = "v1",
+        Description = "REST API для пошуку та оренди квартир/будинків без рієлторів. Містить приклад вертикального зрізу (Products) з DAL+BLL+Web.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "FindFi",
+            Url = new Uri("https://example.com")
+        }
+    });
+});
 
-// DAL + BLL registration
+// DAL + BLL registration (support both DB1 and Default keys for Aspire compatibility)
 var connectionString = builder.Configuration.GetConnectionString("DB1")
+                      ?? builder.Configuration.GetConnectionString("Default")
                       ?? Environment.GetEnvironmentVariable("ConnectionStrings__DB1")
+                      ?? Environment.GetEnvironmentVariable("ConnectionStrings__Default")
                       ?? string.Empty;
 builder.Services.AddDal(connectionString);
 builder.Services.AddBll();
