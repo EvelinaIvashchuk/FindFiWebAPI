@@ -15,18 +15,15 @@ public class CustomerRepository(IDbConnection connection, IDbTransaction transac
     {
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = _transaction;
-        cmd.CommandText = @"INSERT INTO Customer (Email, FullName, Phone, Role, IsActive)
-                            VALUES (@Email, @FullName, @Phone, @Role, @IsActive);
+        cmd.CommandText = @"INSERT INTO Customer (Email, FullName)
+                            VALUES (@Email, @FullName);
                             SELECT LAST_INSERT_ID();";
         AddParam(cmd, "@Email", entity.Email);
         AddParam(cmd, "@FullName", entity.FullName);
-        AddParam(cmd, "@Phone", (object?)entity.Phone ?? DBNull.Value);
-        AddParam(cmd, "@Role", entity.Role);
-        AddParam(cmd, "@IsActive", entity.IsActive);
 
         var result = await cmd.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
         var id = Convert.ToInt64(result);
-        entity.CustomerId = id;
+        entity.Id = id;
         return id;
     }
 
@@ -34,7 +31,7 @@ public class CustomerRepository(IDbConnection connection, IDbTransaction transac
     {
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = _transaction;
-        cmd.CommandText = @"SELECT CustomerId, Email, FullName, Phone, Role, IsActive, CreatedAt
+        cmd.CommandText = @"SELECT CustomerId, Email, FullName
                              FROM Customer WHERE CustomerId = @Id";
         AddParam(cmd, "@Id", id);
 
@@ -47,7 +44,7 @@ public class CustomerRepository(IDbConnection connection, IDbTransaction transac
     {
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = _transaction;
-        cmd.CommandText = @"SELECT CustomerId, Email, FullName, Phone, Role, IsActive, CreatedAt
+        cmd.CommandText = @"SELECT CustomerId, Email, FullName
                              FROM Customer WHERE Email = @Email";
         AddParam(cmd, "@Email", email);
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
@@ -59,7 +56,7 @@ public class CustomerRepository(IDbConnection connection, IDbTransaction transac
     {
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = _transaction;
-        cmd.CommandText = @"SELECT CustomerId, Email, FullName, Phone, Role, IsActive, CreatedAt FROM Customer";
+        cmd.CommandText = @"SELECT CustomerId, Email, FullName, CreatedAt FROM Customer";
         var list = new List<Customer>();
         await using var reader = await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
         while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
@@ -73,13 +70,10 @@ public class CustomerRepository(IDbConnection connection, IDbTransaction transac
     {
         await using var cmd = _connection.CreateCommand();
         cmd.Transaction = _transaction;
-        cmd.CommandText = @"UPDATE Customer SET FullName = @FullName, Phone = @Phone, Role = @Role, IsActive = @IsActive
+        cmd.CommandText = @"UPDATE Customer SET FullName = @FullName, Email = @Email,
                              WHERE CustomerId = @Id";
         AddParam(cmd, "@FullName", entity.FullName);
-        AddParam(cmd, "@Phone", (object?)entity.Phone ?? DBNull.Value);
-        AddParam(cmd, "@Role", entity.Role);
-        AddParam(cmd, "@IsActive", entity.IsActive);
-        AddParam(cmd, "@Id", entity.CustomerId);
+        AddParam(cmd, "@Email", entity.Email);
 
         var affected = await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
         return affected > 0;
@@ -107,12 +101,9 @@ public class CustomerRepository(IDbConnection connection, IDbTransaction transac
     {
         return new Customer
         {
-            CustomerId = reader.GetInt64(reader.GetOrdinal("CustomerId")),
+            Id = reader.GetInt64(reader.GetOrdinal("Id")),
             Email = reader.GetString(reader.GetOrdinal("Email")),
             FullName = reader.GetString(reader.GetOrdinal("FullName")),
-            Phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? null : reader.GetString(reader.GetOrdinal("Phone")),
-            Role = reader.GetByte(reader.GetOrdinal("Role")),
-            IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
             CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
         };
     }

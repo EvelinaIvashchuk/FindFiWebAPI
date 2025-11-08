@@ -76,12 +76,12 @@
 - Linux/macOS (bash):
   ```bash
   export ASPNETCORE_ENVIRONMENT=Development
-  export ConnectionStrings__DB1="Server=localhost;Port=3306;Database=app;User ID=root;Password=12345678;SslMode=None;"
+  export ConnectionStrings__DB1="Server=localhost;Port=3306;Database=rent_core;User ID=root;Password=12345678;SslMode=None;"
   ```
 - Windows PowerShell:
   ```powershell
   $env:ASPNETCORE_ENVIRONMENT="Development"
-  $env:ConnectionStrings__DB1="Server=localhost;Port=3306;Database=app;User ID=root;Password=12345678;SslMode=None;"
+  $env:ConnectionStrings__DB1="Server=localhost;Port=3306;Database=rent_core;User ID=root;Password=12345678;SslMode=None;"
   ```
 
 У складі репозиторію файл FindFi/appsettings.Development.json вже містить приклад з'єднання до MySQL на localhost.

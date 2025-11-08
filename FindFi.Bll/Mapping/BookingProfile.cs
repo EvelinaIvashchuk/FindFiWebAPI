@@ -4,14 +4,14 @@ using FindFi.Domain.Entities;
 
 namespace FindFi.Bll.Mapping;
 
-public class ProductProfile : Profile
+public class BookingProfile : Profile
 {
-    public ProductProfile()
+    public BookingProfile()
     {
-        CreateMap<Product, ProductDto>();
-        CreateMap<CreateProductDto, Product>()
+        CreateMap<Booking, BookingDto>();
+        CreateMap<CreateBookingDto, Booking>()
             .ForMember(d => d.Id, opt => opt.Ignore());
-        CreateMap<UpdateProductDto, Product>()
+        CreateMap<UpdateBookingDto, Booking>()
             .ForMember(d => d.Id, opt => opt.Ignore());
     }
 }

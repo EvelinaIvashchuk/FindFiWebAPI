@@ -11,7 +11,7 @@ public class AutoMapperConfigurationTests
     {
         var config = new MapperConfiguration(cfg =>
         {
-            cfg.AddProfile<ProductProfile>();
+            cfg.AddProfile<BookingProfile>();
         });
         config.AssertConfigurationIsValid();
     }

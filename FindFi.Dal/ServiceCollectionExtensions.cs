@@ -12,9 +12,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Optional: allow direct injection of repositories; resolved from the active UnitOfWork scope
-        services.AddScoped<IProductRepository>(sp => sp.GetRequiredService<IUnitOfWork>().Products);
+        services.AddScoped<IBookingRepository>(sp => sp.GetRequiredService<IUnitOfWork>().Bookings);
         services.AddScoped<ICustomerRepository>(sp => sp.GetRequiredService<IUnitOfWork>().Customers);
-        services.AddScoped<IOrderRepository>(sp => sp.GetRequiredService<IUnitOfWork>().Orders);
+        //services.AddScoped<IOrderRepository>(sp => sp.GetRequiredService<IUnitOfWork>().Orders);
 
         return services;
     }

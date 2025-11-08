@@ -5,9 +5,9 @@ namespace FindFi.Dal.Abstractions;
 public interface IUnitOfWork : IAsyncDisposable, IDisposable
 {
     // Repositories
-    IProductRepository Products { get; }
+    IBookingRepository Bookings { get; }
     ICustomerRepository Customers { get; }
-    IOrderRepository Orders { get; }
+    //IOrderRepository Orders { get; }
 
     // Transaction control
     Task CommitAsync(CancellationToken cancellationToken = default);

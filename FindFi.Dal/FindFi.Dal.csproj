@@ -16,4 +16,9 @@
     <ProjectReference Include="..\FindFi.Domain\FindFi.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Repositories\OrderRepository.cs" />
+    <Compile Remove="Abstractions\IOrderRepository.cs" />
+  </ItemGroup>
+
 </Project>

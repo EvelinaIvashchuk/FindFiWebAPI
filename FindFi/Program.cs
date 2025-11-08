@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "FindFi API",
         Version = "v1",
-        Description = "REST API для пошуку та оренди квартир/будинків без рієлторів. Містить приклад вертикального зрізу (Products) з DAL+BLL+Web.",
+        Description = "REST API для пошуку та оренди квартир/будинків без рієлторів. Містить приклад вертикального зрізу (Bookings) з DAL+BLL+Web.",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
         {
             Name = "FindFi",

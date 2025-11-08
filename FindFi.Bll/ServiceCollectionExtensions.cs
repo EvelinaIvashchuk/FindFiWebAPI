@@ -11,9 +11,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddAutoMapper(cfg =>
         {
-            cfg.AddProfile<ProductProfile>();
-        }, typeof(ProductProfile).Assembly);
+            cfg.AddProfile<BookingProfile>();
+        }, typeof(BookingProfile).Assembly);
 
-        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IBookingService, BookingService>();
     }
 }

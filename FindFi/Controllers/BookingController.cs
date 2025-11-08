@@ -8,24 +8,24 @@ namespace FindFi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class ProductsController(IProductService productService) : ControllerBase
+public class BookingController(IBookingService bookingService) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll(CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(IEnumerable<BookingDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<BookingDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var items = await productService.GetAllAsync(cancellationToken);
+        var items = await bookingService.GetAllAsync(cancellationToken);
         return Ok(items);
     }
 
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BookingDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductDto>> GetById(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<BookingDto>> GetById(int id, CancellationToken cancellationToken)
     {
         try
         {
-            var item = await productService.GetByIdAsync(id, cancellationToken);
+            var item = await bookingService.GetByIdAsync(id, cancellationToken);
             return Ok(item);
         }
         catch (NotFoundException)
@@ -35,15 +35,15 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(BookingDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto dto, CancellationToken cancellationToken)
+    public async Task<ActionResult<BookingDto>> Create([FromBody] CreateBookingDto dto, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         try
         {
-            var id = await productService.CreateAsync(dto, cancellationToken);
-            var created = await productService.GetByIdAsync(id, cancellationToken);
+            var id = await bookingService.CreateAsync(dto, cancellationToken);
+            var created = await bookingService.GetByIdAsync(id, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id }, created);
         }
         catch (ValidationException ex)
@@ -64,12 +64,12 @@ public class ProductsController(IProductService productService) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateProductDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateBookingDto dto, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         try
         {
-            await productService.UpdateAsync(id, dto, cancellationToken);
+            await bookingService.UpdateAsync(id, dto, cancellationToken);
             return NoContent();
         }
         catch (NotFoundException)
@@ -101,7 +101,7 @@ public class ProductsController(IProductService productService) : ControllerBase
     {
         try
         {
-            await productService.DeleteAsync(id, cancellationToken);
+            await bookingService.DeleteAsync(id, cancellationToken);
             return NoContent();
         }
         catch (NotFoundException)

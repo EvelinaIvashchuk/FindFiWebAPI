@@ -15,9 +15,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly IConnectionFactory _connectionFactory;
     private IDbConnection? _connection;
     private IDbTransaction? _transaction;
-    private IProductRepository? _products;
+    private IBookingRepository? _bookings;
     private ICustomerRepository? _customers;
-    private IOrderRepository? _orders;
     private bool _disposed;
 
     public UnitOfWork(IConnectionFactory connectionFactory)
@@ -28,9 +27,10 @@ public class UnitOfWork : IUnitOfWork
         _transaction = _connection.BeginTransaction(IsolationLevel.ReadCommitted);
     }
 
-    public IProductRepository Products => _products ??= new ProductRepository(Connection, Transaction);
+    public IBookingRepository Bookings => _bookings ??= new BookingRepository(Connection, Transaction);
+
     public ICustomerRepository Customers => _customers ??= new CustomerRepository(Connection, Transaction);
-    public IOrderRepository Orders => _orders ??= new OrderRepository(Connection, Transaction);
+    //public IOrderRepository Orders => _orders ??= new OrderRepository(Connection, Transaction);
 
     public IDbConnection Connection => _connection ?? throw new ObjectDisposedException(nameof(UnitOfWork));
     public IDbTransaction Transaction => _transaction ?? throw new ObjectDisposedException(nameof(UnitOfWork));
@@ -56,9 +56,9 @@ public class UnitOfWork : IUnitOfWork
         {
             _transaction = _connection.BeginTransaction(IsolationLevel.ReadCommitted);
             // reset repositories to ensure they use a fresh transaction
-            _products = null;
+            _bookings = null;
             _customers = null;
-            _orders = null;
+            //_orders = null;
         }
     }
 
