@@ -22,6 +22,12 @@ public class BookingService(IUnitOfWork unitOfWork, IMapper mapper) : IBookingSe
         return mapper.Map<BookingDto>(entity);
     }
 
+    public async Task<int> GetCountAsync(CancellationToken cancellationToken = default)
+    {
+        var entity = await unitOfWork.Bookings.GetCount(cancellationToken);
+        return mapper.Map<int>(entity);
+    }
+
     public async Task<int> CreateAsync(CreateBookingDto dto, CancellationToken cancellationToken = default)
     {
         Validate(dto);

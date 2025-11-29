@@ -12,6 +12,12 @@ public class BookingRepository(IDbConnection connection, IDbTransaction transact
         var sql = "SELECT * FROM Booking";
         return await connection.QueryAsync<Booking>(new CommandDefinition(sql, transaction: transaction, cancellationToken: cancellationToken));
     }
+    
+    public async Task<int> GetCount(CancellationToken cancellationToken = default)
+    {
+        var sql = "SELECT COUNT(*) FROM Booking";
+        return await connection.QueryFirstOrDefaultAsync<int>(new CommandDefinition(sql, transaction: transaction, cancellationToken: cancellationToken));
+    }
 
     public async Task<Booking?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {

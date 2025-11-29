@@ -44,6 +44,7 @@ var connectionString = builder.Configuration.GetConnectionString("DB1")
                       ?? string.Empty;
 builder.Services.AddDal(connectionString);
 builder.Services.AddBll();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -62,5 +63,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
