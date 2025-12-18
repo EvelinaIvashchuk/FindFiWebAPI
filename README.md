@@ -9,6 +9,7 @@
 - Швидкий старт
   - Варіант A: через .NET Aspire (рекомендовано)
   - Варіант B: локальний запуск API
+  - Варіант C: через Docker Compose (повне середовище)
 - Конфігурація (ConnectionStrings, змінні середовища)
 - База даних (мінімальна схема для прикладу)
 - Перевірка роботи API (Swagger, curl приклади)
@@ -66,6 +67,20 @@
      ```
 3. За замовчуванням Swagger доступний у середовищі Development.
 
+### Варіант C: через Docker Compose
+Найшвидший спосіб підняти все середовище (API + БД) однією командою:
+1. Переконайтесь, що Docker запущений.
+2. Виконайте команду в корені проекту:
+   ```bash
+   docker-compose up --build
+   ```
+3. Після успішного запуску:
+   - API буде доступне за адресою: `http://localhost:5005`
+   - Swagger: `http://localhost:5005/swagger/index.html`
+   - MySQL буде доступний на порту `3307` (пароль: `12345678`). Ми змінили порт на `3307`, щоб уникнути конфліктів, якщо у вас вже запущений локальний MySQL на порту `3306`.
+
+База даних `rent_core` та таблиця `Product` створюються автоматично при першому запуску завдяки скрипту в `./db-init`.
+
 ## Конфігурація
 Додаток підтримує обидва ключі підключення: `ConnectionStrings:DB1` та `ConnectionStrings:Default` (для сумісності з Aspire). Порядок пошуку:
 1. `ConnectionStrings:DB1` з конфігурації
@@ -101,40 +116,40 @@ CREATE TABLE IF NOT EXISTS Product (
 Після запуску скористайтесь одним із способів:
 
 ### 1) Swagger UI
-- URL Swagger UI (Development): `https://localhost:5001/swagger` або `http://localhost:5000/swagger` (точний порт залежить від запуску).
+- URL Swagger UI (Development): `https://localhost:5001/swagger` або `http://localhost:5005/swagger` (точний порт залежить від запуску).
 - OpenAPI JSON: `/swagger/v1/swagger.json`
 - Альтернативний OpenAPI (Minimal API docs .NET 9): `/openapi/v1.json`
 
 ### 2) curl приклади
-Припустимо базова адреса — `http://localhost:5000` (замініть на вашу):
+Припустимо базова адреса — `http://localhost:5005` (замініть на вашу):
 
 - Отримати всі продукти:
   ```bash
-  curl -s http://localhost:5000/api/products | jq
+  curl -s http://localhost:5005/api/products | jq
   ```
 
 - Створити продукт:
   ```bash
-  curl -s -X POST http://localhost:5000/api/products \
+  curl -s -X POST http://localhost:5005/api/products \
     -H "Content-Type: application/json" \
     -d '{"name":"Sofa","price":199.99}' | jq
   ```
 
 - Отримати продукт за Id:
   ```bash
-  curl -s http://localhost:5000/api/products/1 | jq
+  curl -s http://localhost:5005/api/products/1 | jq
   ```
 
 - Оновити продукт:
   ```bash
-  curl -s -X PUT http://localhost:5000/api/products/1 \
+  curl -s -X PUT http://localhost:5005/api/products/1 \
     -H "Content-Type: application/json" \
     -d '{"name":"Sofa XL","price":249.99}' -i
   ```
 
 - Видалити продукт:
   ```bash
-  curl -s -X DELETE http://localhost:5000/api/products/1 -i
+  curl -s -X DELETE http://localhost:5005/api/products/1 -i
   ```
 
 Очікувані статуси:
@@ -165,6 +180,7 @@ dotnet test
 ```
 
 ## Усунення несправностей
+- **Port already in use (3306 або 5000)**: Якщо при запуску виникає помилка `bind: address already in use` для портів 3306 або 5000, це означає, що на вашому комп'ютері вже запущено інший сервер MySQL або інший веб-сервіс (наприклад, macOS AirPlay Receiver часто займає порт 5000). Ми налаштували `docker-compose.yml` на використання портів `3307` та `5005` для хоста, щоб уникнути цих проблем. Якщо ви хочете змінити їх, відредагуйте `docker-compose.yml`.
 - Swagger не відкривається: перевірте, що `ASPNETCORE_ENVIRONMENT=Development`.
 - Немає підключення до БД: перевірте рядок підключення (host/порт/логін/пароль), чи запущений MySQL (локально або через AppHost). Для Aspire рядок підключення інжектується автоматично як `ConnectionStrings__Default`.
 - Помилки під час INSERT/UPDATE: переконайтесь, що створена таблиця `Product` з потрібними стовпцями.
